@@ -4,42 +4,50 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
+    <include
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Name : "
-            android:layout_gravity="center"
-            android:id="@+id/activity_add_course_textview_name"
-            android:textSize="@dimen/abc_text_size_medium_material" />
+        layout="@layout/toolbar" />
 
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/activity_add_course_edittext_name"
-            android:layout_weight="1"/>
-    </LinearLayout>
-
-    <LinearLayout
+    <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Place : "
-            android:layout_gravity="center"
-            android:id="@+id/activity_add_course_textview_place"
-            android:textSize="@dimen/abc_text_size_medium_material" />
+        android:id="@+id/activity_add_course_edittext_name"
+        android:hint="@string/coursename"
+        android:textColorHint="@color/hint"/>
 
-        <EditText
-            android:layout_width="wrap_content"
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/activity_add_course_edittext_place"
+        android:hint="@string/courseplace"
+        android:textColorHint="@color/hint"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="From"
+        android:id="@+id/activity_add_course_textview_start"
+        android:textColor="#66000000"
+        android:textSize="@dimen/abc_text_size_subhead_material"
+        android:paddingLeft="@dimen/abc_text_size_subhead_material" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Spinner
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/activity_add_course_edittext_place"
-            android:layout_weight="1"/>
+            android:id="@+id/startDateSpinner"
+            android:spinnerMode="dropdown"
+            android:layout_weight="3"/>
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/startTimeSpinner"
+            android:spinnerMode="dropdown"
+            android:layout_weight="2"/>
     </LinearLayout>
 
     <LinearLayout android:layout_width="match_parent"
@@ -51,7 +59,7 @@
             android:text="Time : "
             android:layout_gravity="center"
             android:id="@+id/activity_add_course_textview_time"
-            android:textSize="@dimen/abc_text_size_medium_material" />
+            android:textSize="@dimen/abc_text_size_medium_material"/>
 
         <Button
             android:layout_width="wrap_content"
@@ -77,7 +85,7 @@
             android:text="Duration : "
             android:layout_gravity="center"
             android:id="@+id/activity_add_course_textview_duration"
-            android:textSize="@dimen/abc_text_size_medium_material" />
+            android:textSize="@dimen/abc_text_size_medium_material"/>
 
         <Button
             android:layout_width="wrap_content"
@@ -98,7 +106,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Submit"
+        android:text="@string/submit"
         android:id="@+id/activity_add_course_button_submit"
         android:layout_gravity="center"/>
 

@@ -143,10 +143,10 @@ public class Course implements Comparable<Course>, Parcelable{
         return "Course{" +
                 "name='" + name + '\'' +
                 ", place='" + place + '\'' +
-                ", starttime=" + starttime +
-                ", endtime=" + endtime +
-                ", startdate=" + startdate +
-                ", enddate=" + enddate +
+                ", starttime=" + getStartTimeByInt() +
+                ", endtime=" + getEndTimeByInt() +
+                ", startdate=" + getStartDateByIntForDisplay() +
+                ", enddate=" + getEndDateByIntForDisplay() +
                 '}';
     }
 }

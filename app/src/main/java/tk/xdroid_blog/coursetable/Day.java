@@ -31,10 +31,16 @@ public class Day {
         this.list = list;
     }
 
+    public Day(int i, List<Course> list) {
+        this.calendar = Calendar.getInstance();
+        calendar.set(i / 10000, (i / 100) % 100, i % 100, 0, 0, 0);
+        this.list = list;
+    }
+
     public String getDate(){
         return "" + calendar.get(Calendar.MONTH)
-                + calendar.get(Calendar.DAY_OF_MONTH)
-                + calendar.get(Calendar.YEAR);
+                + ", " + calendar.get(Calendar.DAY_OF_MONTH)
+                + ", " + calendar.get(Calendar.YEAR);
     }
 
     public String getSummary(){
@@ -49,5 +55,13 @@ public class Day {
 
     public int validCourseNumber(){
         return 1;
+    }
+
+    @Override
+    public String toString() {
+        return "Day{" +
+                "calendar=" + getDate() +
+                ", list=" +
+                '}';
     }
 }

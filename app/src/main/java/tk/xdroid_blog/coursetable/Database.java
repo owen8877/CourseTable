@@ -56,22 +56,19 @@ public class Database extends SQLiteOpenHelper {
         return list;
     }
 
-    public synchronized static List<Day> getDaylist(Context context){
-        getlist(context);
-        listofsublist = new ArrayList<List<Course>> ();
-        for (int a = 0;a < 7;a++) listofsublist.add(new ArrayList<Course>());
-        for (Course c:list){
-            listofsublist.get(c.getWeekDay() - 1).add(c);
-        }
-        Calendar now = Calendar.getInstance();
-        now.set(Calendar.HOUR_OF_DAY, 0);
-        now.set(Calendar.MINUTE, 0);
-        now.set(Calendar.SECOND, 0);
-        now.set(Calendar.MILLISECOND, 0);
-        int i = 0;
-        for (List<Course> sublist:listofsublist){
-            daylist.add(new Day(now, sublist));
-            now.add(Calendar.DAY_OF_MONTH, i++);
+    public synchronized static List<Day> getdaylist(Context context){
+        if (db == null) {
+            getlist(context);
+            listofsublist = new ArrayList<List<Course>>();
+            for (int a = 0; a < 7; a++) listofsublist.add(new ArrayList<Course>());
+            for (Course c : list) {
+                listofsublist.get(c.getWeekDay() - 1).add(c);
+            }
+            Calendar now = Calendar.getInstance();
+            int i = now.get(Calendar.YEAR) * 10000 + now.get(Calendar.MONTH) * 100 + now.get(Calendar.DAY_OF_MONTH);
+            for (List<Course> sublist : listofsublist) {
+                daylist.add(new Day(i++, sublist));
+            }
         }
         return daylist;
     }
@@ -94,7 +91,6 @@ public class Database extends SQLiteOpenHelper {
             db.getWritableDatabase().update(TableName, course_new.getContentValues(), StartTime + " = ?",
                     new String[]{String.valueOf(course_old.getStartTimeByInt())});
             Collections.sort(list);
-            Log.d("modifying...", "true");
             return true;
         }
         return false;

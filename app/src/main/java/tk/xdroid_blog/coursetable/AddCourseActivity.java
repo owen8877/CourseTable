@@ -8,9 +8,12 @@ import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -106,36 +109,67 @@ public class AddCourseActivity extends ActionBarActivity {
             }
         });
 
-        button_submit = (Button) findViewById(R.id.activity_add_course_button_submit);
+        Spinner startdatepickers = (Spinner) findViewById(R.id.startDateSpinner);
+        String[] startdatespinner = {String.valueOf(startYear)};
+        startdatepickers.setAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, startdatespinner));
+        startdatepickers.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                DatePickerFragment datepickerFragment = new DatePickerFragment();
+                FragmentManager fm = getFragmentManager();
+                datepickerFragment.show(fm, "startDatePicker");
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        Spinner starttimepickers = (Spinner) findViewById(R.id.startTimeSpinner);
+        String[] starttimespinner = {String.valueOf(startHour)};
+        startdatepickers.setAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, starttimespinner));
+        starttimepickers.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                TimePickerFragment timepickerFragment = new TimePickerFragment();
+                FragmentManager fm = getFragmentManager();
+                timepickerFragment.show(fm, "startTimePicker");
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+                button_submit = (Button) findViewById(R.id.activity_add_course_button_submit);
         button_submit.setOnClickListener(
             new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     EditText editTextName = (EditText) findViewById(R.id.activity_add_course_edittext_name);
                     EditText editTextPlace = (EditText) findViewById(R.id.activity_add_course_edittext_place);
-                    if ((flag & 15) == 15){
-                        if ((flag & 32) != 32) {
-                            Database.addCourse(new Course(editTextName.getText().toString(),
-                                    editTextPlace.getText().toString(),
-                                    startHour * 100 + startMinute,
-                                    endHour * 100 + endMinute,
-                                    startYear * 10000 + startMonth * 100 + startDay,
-                                    endYear * 10000 + endMonth * 100 + endDay));
-                        }
-                        else {
-                            Database.modifyCourse(temp,
-                                    new Course(editTextName.getText().toString(),
-                                    editTextPlace.getText().toString(),
-                                    startHour * 100 + startMinute,
-                                    endHour * 100 + endMinute,
-                                    startYear * 10000 + startMonth * 100 + startDay,
-                                    endYear * 10000 + endMonth * 100 + endDay));
-                        }
+                    if ((flag & 32) == 32) {
+                        Database.modifyCourse(temp,
+                                new Course(editTextName.getText().toString(),
+                                        editTextPlace.getText().toString(),
+                                        startHour * 100 + startMinute,
+                                        endHour * 100 + endMinute,
+                                        startYear * 10000 + startMonth * 100 + startDay,
+                                        endYear * 10000 + endMonth * 100 + endDay));
+                        finish();
+                    }
+                    if ((flag & 15) == 15) {
+                        Database.addCourse(new Course(editTextName.getText().toString(),
+                                editTextPlace.getText().toString(),
+                                startHour * 100 + startMinute,
+                                endHour * 100 + endMinute,
+                                startYear * 10000 + startMonth * 100 + startDay,
+                                endYear * 10000 + endMonth * 100 + endDay));
+                        finish();
                     }
                     else{
                         Toast.makeText(AddCourseActivity.this, "Please pick dates and times!", Toast.LENGTH_SHORT).show();
                     }
-                    finish();
                 }
             }
         );

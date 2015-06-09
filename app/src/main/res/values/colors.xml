@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="Sky_Blue">#4876FF</color>
+    <color name="Dim_Sky_Blue">#3A5FCD</color>
+    <color name="Background">#FFFFFF</color>
+    <color name="Primary_Text">#000000</color>
+    <color name="hint">#50000000</color>
+</resources>
