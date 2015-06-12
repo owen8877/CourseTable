@@ -6,9 +6,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -21,8 +19,7 @@ public class MainActivity extends ActionBarActivity{
 
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         // toolbar.setLogo(R.drawable.ic_launcher);
-        mToolbar.setTitle(R.string.app_name);// 标题的文字需在setSupportActionBar之前，不然会无效
-        mToolbar.setSubtitle("SubTitle");
+        mToolbar.setTitle(R.string.app_name);
         setSupportActionBar(mToolbar);
         mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override

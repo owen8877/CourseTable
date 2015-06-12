@@ -1,5 +1,6 @@
 package tk.xdroid_blog.coursetable;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
@@ -18,10 +19,6 @@ public class Day {
         return list;
     }
 
-    public void setCalendar(Calendar calendar) {
-        this.calendar = calendar;
-    }
-
     public void setList(List<Course> list) {
         this.list = list;
     }
@@ -37,31 +34,34 @@ public class Day {
         this.list = list;
     }
 
-    public String getDate(){
-        return "" + calendar.get(Calendar.MONTH)
-                + ", " + calendar.get(Calendar.DAY_OF_MONTH)
-                + ", " + calendar.get(Calendar.YEAR);
+    public String getDateByString(){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("M,d,yyyy");
+        return simpleDateFormat.format(calendar.getTime());
     }
 
     public String getSummary(){
         int i = this.validCourseNumber();
         return "There "
-                + ((i == 1) ? "is " : "are ")
+                + ((i <= 1) ? "is " : "are ")
                 + i
                 + " course"
-                + ((i == 1) ? " " : "s ")
+                + ((i <= 1) ? " " : "s ")
                 + "today.";
     }
 
     public int validCourseNumber(){
-        return 1;
+        int i = 0;
+        for (Course c:list){
+            if (c.isInThisDay(calendar)) i++;
+        }
+        return i;
     }
 
     @Override
     public String toString() {
-        return "Day{" +
-                "calendar=" + getDate() +
-                ", list=" +
-                '}';
+        StringBuilder stringBuilder = new StringBuilder("Day{calendar=" + getDateByString() + ", list= ");
+        for (Course c:list) stringBuilder.append(c.toString() + ";");
+        stringBuilder.append("}");
+        return stringBuilder.toString();
     }
 }

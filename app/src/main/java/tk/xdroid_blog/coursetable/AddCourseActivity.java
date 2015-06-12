@@ -1,58 +1,77 @@
 package tk.xdroid_blog.coursetable;
 
-import android.app.DatePickerDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
-import android.app.FragmentManager;
-import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.TimePicker;
 import android.widget.Toast;
+
+import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 
 import java.util.Calendar;
 
 
-public class AddCourseActivity extends ActionBarActivity {
+public class AddCourseActivity extends ActionBarActivity implements com.fourmob.datetimepicker.date.DatePickerDialog.OnDateSetListener, com.sleepbot.datetimepicker.time.TimePickerDialog.OnTimeSetListener{
 
     private static int startYear, startMonth, startDay;
     private static int endYear, endMonth, endDay;
     private static int startHour, startMinute;
     private static int endHour, endMinute;
     private static int flag = 0;
-    private static Calendar calendar = Calendar.getInstance();
+    private static Calendar calendar;
     private static Course temp;
+    Button button_submit, startdatepicker, enddatepicker, starttimepicker, endtimepicker;
+    EditText editTextName, editTextPlace;
+
+    @Override
+    public void finish() {
+        flag = 0;
+        calendar = null;
+        temp = null;
+        super.finish();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_course);
 
-        EditText editTextName = (EditText) findViewById(R.id.activity_add_course_edittext_name);
-        EditText editTextPlace = (EditText) findViewById(R.id.activity_add_course_edittext_place);
+        //Toolbar part
+        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar.setTitle(R.string.app_name);
+        setSupportActionBar(mToolbar);
+        mToolbar.setOnMenuItemClickListener(onMenuItemClickListener);
+
+        calendar = Calendar.getInstance();
+        editTextName = (EditText) findViewById(R.id.activity_add_course_edittext_name);
+        editTextPlace = (EditText) findViewById(R.id.activity_add_course_edittext_place);
+
+        startdatepicker = (Button) findViewById(R.id.activity_add_course_startdatepicker);
+        enddatepicker = (Button) findViewById(R.id.activity_add_course_enddatepicker);
+        starttimepicker = (Button) findViewById(R.id.activity_add_course_starttimepicker);
+        endtimepicker = (Button) findViewById(R.id.activity_add_course_endtimepicker);
+        button_submit = (Button) findViewById(R.id.activity_add_course_button_submit);
+
         if (getIntent().hasExtra("Course")){
             temp = getIntent().getParcelableExtra("Course");
             editTextName.setText(temp.getName());
             editTextPlace.setText(temp.getPlace());
-            //TODO:init
-            startYear = temp.getStartDateByIntForFile() / 10000;
-            startMonth = (temp.getStartDateByIntForFile() / 100) % 100;
-            startDay = temp.getStartDateByIntForFile() % 100;
-            startHour = temp.getStartTimeByInt() / 100;
+            startYear = temp.getStartDateByInt() / 10000;
+            startMonth = (temp.getStartDateByInt() / 100) % 100;
+            startDay = temp.getStartDateByInt() % 100;
+            startHour = (temp.getStartTimeByInt() / 100) % 100;
             startMinute = temp.getStartTimeByInt() % 100;
-            endYear = temp.getEndDateByIntForFile() / 10000;
-            endMonth = (temp.getEndDateByIntForFile() / 100) % 100;
-            endDay = temp.getEndDateByIntForFile() % 100;
-            endHour = temp.getEndTimeByInt() / 100;
+            endYear = temp.getEndDateByInt() / 10000;
+            endMonth = (temp.getEndDateByInt() / 100) % 100;
+            endDay = temp.getEndDateByInt() % 100;
+            endHour = (temp.getEndTimeByInt() / 100) % 100;
             endMinute = temp.getEndTimeByInt() % 100;
             flag = flag | 16;
+            UiRefresh();
         }
         else {
             startYear = calendar.get(Calendar.YEAR);
@@ -67,97 +86,96 @@ public class AddCourseActivity extends ActionBarActivity {
             endMinute = calendar.get(Calendar.MINUTE);
         }
 
-        Button button_submit, startdatepicker, enddatepicker;
-        startdatepicker = (Button) findViewById(R.id.activity_add_course_startdatepicker);
+        final com.fourmob.datetimepicker.date.DatePickerDialog startDatePickerDialog = com.fourmob.datetimepicker.date.DatePickerDialog.newInstance(this, startYear, startMonth, startDay);
+        final com.sleepbot.datetimepicker.time.TimePickerDialog startTimePickerDialog = com.sleepbot.datetimepicker.time.TimePickerDialog.newInstance(this, startHour, startMinute, true);
+        final com.fourmob.datetimepicker.date.DatePickerDialog endDatePickerDialog = com.fourmob.datetimepicker.date.DatePickerDialog.newInstance(this, endYear, endMonth, endDay);
+        final com.sleepbot.datetimepicker.time.TimePickerDialog endTimePickerDialog = com.sleepbot.datetimepicker.time.TimePickerDialog.newInstance(this, endHour, endMinute, true);
+
         startdatepicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatePickerFragment datepickerFragment = new DatePickerFragment();
-                FragmentManager fm = getFragmentManager();
-                datepickerFragment.show(fm, "startDatePicker");
+                startDatePickerDialog.setVibrate(false);
+                startDatePickerDialog.setCloseOnSingleTapDay(true);
+                startDatePickerDialog.show(getSupportFragmentManager(), "startDatePicker");
             }
         });
 
-        enddatepicker = (Button) findViewById(R.id.activity_add_course_enddatepicker);
         enddatepicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatePickerFragment datepickerFragment = new DatePickerFragment();
-                FragmentManager fm = getFragmentManager();
-                datepickerFragment.show(fm, "endDatePicker");
+                endDatePickerDialog.setVibrate(false);
+                endDatePickerDialog.setCloseOnSingleTapDay(true);
+                endDatePickerDialog.show(getSupportFragmentManager(), "endDatePicker");
             }
         });
 
-        Button starttimepicker, endtimepicker;
-        starttimepicker = (Button) findViewById(R.id.activity_add_course_starttimepicker);
         starttimepicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TimePickerFragment timepickerFragment = new TimePickerFragment();
-                FragmentManager fm = getFragmentManager();
-                timepickerFragment.show(fm, "startTimePicker");
+                startTimePickerDialog.setVibrate(false);
+                startTimePickerDialog.setCloseOnSingleTapMinute(true);
+                startTimePickerDialog.show(getSupportFragmentManager(), "startTimePicker");
             }
         });
 
-        endtimepicker = (Button) findViewById(R.id.activity_add_course_endtimepicker);
         endtimepicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TimePickerFragment timepickerFragment = new TimePickerFragment();
-                FragmentManager fm = getFragmentManager();
-                timepickerFragment.show(fm, "endTimePicker");
+                endTimePickerDialog.setVibrate(false);
+                endTimePickerDialog.setCloseOnSingleTapMinute(true);
+                endTimePickerDialog.show(getSupportFragmentManager(), "endTimePicker");
             }
         });
+    }
 
-        Spinner startdatepickers = (Spinner) findViewById(R.id.startDateSpinner);
-        String[] startdatespinner = {String.valueOf(startYear)};
-        startdatepickers.setAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, startdatespinner));
-        startdatepickers.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                DatePickerFragment datepickerFragment = new DatePickerFragment();
-                FragmentManager fm = getFragmentManager();
-                datepickerFragment.show(fm, "startDatePicker");
-            }
+    @Override
+    public void onDateSet(com.fourmob.datetimepicker.date.DatePickerDialog datePickerDialog, int year, int month, int day) {
+        if (datePickerDialog.getTag().equals("startDatePicker")){
+            startYear = year;
+            startMonth = month;
+            startDay = day;
+            flag = flag | 1;
+            UiRefresh();
+        }
+        else if (datePickerDialog.getTag().equals("endDatePicker")){
+            endYear = year;
+            endMonth = month;
+            endDay = day;
+            flag = flag | 2;
+            UiRefresh();
+        }
+    }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
+    @Override
+    public void onTimeSet(RadialPickerLayout radialPickerLayout, int hourOfDay, int minute) {
+        if (getSupportFragmentManager().findFragmentByTag("startTimePicker") != null){
+            startHour = hourOfDay;
+            startMinute = minute;
+            flag = flag | 4;
+            UiRefresh();
+        }
+        else if (getSupportFragmentManager().findFragmentByTag("endTimePicker") != null){
+            endHour = hourOfDay;
+            endMinute = minute;
+            flag = flag | 8;
+            UiRefresh();
+        }
+    }
 
-        Spinner starttimepickers = (Spinner) findViewById(R.id.startTimeSpinner);
-        String[] starttimespinner = {String.valueOf(startHour)};
-        startdatepickers.setAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, starttimespinner));
-        starttimepickers.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                TimePickerFragment timepickerFragment = new TimePickerFragment();
-                FragmentManager fm = getFragmentManager();
-                timepickerFragment.show(fm, "startTimePicker");
-            }
+    private void UiRefresh(){
+        startdatepicker.setText(Course.getString(startYear, startMonth, startDay));
+        starttimepicker.setText(Course.getString(startHour, startMinute));
+        enddatepicker.setText(Course.getString(endYear, endMonth, endDay));
+        endtimepicker.setText(Course.getString(endHour, endMinute));
+    }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
-                button_submit = (Button) findViewById(R.id.activity_add_course_button_submit);
-        button_submit.setOnClickListener(
-            new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    EditText editTextName = (EditText) findViewById(R.id.activity_add_course_edittext_name);
-                    EditText editTextPlace = (EditText) findViewById(R.id.activity_add_course_edittext_place);
-                    if ((flag & 32) == 32) {
-                        Database.modifyCourse(temp,
-                                new Course(editTextName.getText().toString(),
-                                        editTextPlace.getText().toString(),
-                                        startHour * 100 + startMinute,
-                                        endHour * 100 + endMinute,
-                                        startYear * 10000 + startMonth * 100 + startDay,
-                                        endYear * 10000 + endMonth * 100 + endDay));
-                        finish();
-                    }
+    private Toolbar.OnMenuItemClickListener onMenuItemClickListener = new Toolbar.OnMenuItemClickListener() {
+        @Override
+        public boolean onMenuItemClick(MenuItem menuItem) {
+            EditText editTextName = (EditText) findViewById(R.id.activity_add_course_edittext_name);
+            EditText editTextPlace = (EditText) findViewById(R.id.activity_add_course_edittext_place);
+            switch (menuItem.getItemId()) {
+                case R.id.action_add_course_apply:
                     if ((flag & 15) == 15) {
                         Database.addCourse(new Course(editTextName.getText().toString(),
                                 editTextPlace.getText().toString(),
@@ -170,75 +188,40 @@ public class AddCourseActivity extends ActionBarActivity {
                     else{
                         Toast.makeText(AddCourseActivity.this, "Please pick dates and times!", Toast.LENGTH_SHORT).show();
                     }
-                }
+                    break;
+                case R.id.action_add_course_cancel:
+                    finish();
+                    break;
+                case R.id.action_add_course_modify:
+                    Database.modifyCourse(temp,
+                            new Course(editTextName.getText().toString(),
+                                    editTextPlace.getText().toString(),
+                                    startHour * 100 + startMinute,
+                                    endHour * 100 + endMinute,
+                                    startYear * 10000 + startMonth * 100 + startDay,
+                                    endYear * 10000 + endMonth * 100 + endDay));
+                    finish();
+                    break;
+                case R.id.action_add_course_delete:
+                    Database.deleteCourse(temp);
+                    finish();
+                    break;
+                default:
+                    break;
             }
-        );
-    }
-
-    public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener{
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            if (getTag().equals("startDatePicker")){
-                return new DatePickerDialog(getActivity(), this, startYear, startMonth, startDay);
-            }
-            else if (getTag().equals("endDatePicker")){
-                return new DatePickerDialog(getActivity(), this, endYear, endMonth, endDay);
-            }
-            else{
-                return new DatePickerDialog(getActivity(), this,
-                        calendar.get(Calendar.YEAR),
-                        calendar.get(Calendar.MONTH),
-                        calendar.get(Calendar.DAY_OF_MONTH));
-            }
+            return true;
         }
+    };
 
-        @Override
-        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-            if (getTag().equals("startDatePicker")){
-                startYear = year;
-                startMonth = monthOfYear;
-                startDay = dayOfMonth;
-                flag = flag | 1;
-            }
-            else if (getTag().equals("endDatePicker")){
-                endYear = year;
-                endMonth = monthOfYear;
-                endDay = dayOfMonth;
-                flag = flag | 2;
-            }
-
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        if ((flag & 16) == 16) {
+            getMenuInflater().inflate(R.menu.menu_add_course_modifymode, menu);
         }
-    }
-
-    public static class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener{
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            if (getTag().equals("startTimePicker")){
-                return new TimePickerDialog(getActivity(), this, startHour, startMinute, true);
-            }
-            else if (getTag().equals("endTimePicker")){
-                return new TimePickerDialog(getActivity(), this, endHour, endMinute, true);
-            }
-            else{
-                return new TimePickerDialog(getActivity(), this,
-                        calendar.get(Calendar.HOUR_OF_DAY),
-                        calendar.get(Calendar.MINUTE),
-                        true);
-            }
+        else {
+            getMenuInflater().inflate(R.menu.menu_add_course_addmode, menu);
         }
-
-        @Override
-        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-            if (getTag().equals("startTimePicker")){
-                startHour = hourOfDay;
-                startMinute = minute;
-                flag = flag | 4;
-            }
-            else if (getTag().equals("endTimePicker")){
-                endHour = hourOfDay;
-                endMinute = minute;
-                flag = flag | 8;
-            }
-        }
+        return true;
     }
 }

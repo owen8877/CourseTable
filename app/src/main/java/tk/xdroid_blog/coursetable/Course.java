@@ -3,9 +3,12 @@ package tk.xdroid_blog.coursetable;
 import android.content.ContentValues;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
+import android.util.Log;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by Owen on 2015/5/2.
@@ -29,24 +32,14 @@ public class Course implements Comparable<Course>, Parcelable{
     public int getWeekDay(){
         return startdate.get(Calendar.DAY_OF_WEEK);
     }
-    public int getStartDateByIntForFile() {
+    public int getStartDateByInt() {
         return startdate.get(Calendar.YEAR) * 10000
                 + startdate.get(Calendar.MONTH) * 100
                 + startdate.get(Calendar.DAY_OF_MONTH);
     }
-    public int getStartDateByIntForDisplay() {
-        return startdate.get(Calendar.YEAR) * 10000
-                + ( startdate.get(Calendar.MONTH) + 1 ) * 100
-                + startdate.get(Calendar.DAY_OF_MONTH);
-    }
-    public int getEndDateByIntForFile() {
+    public int getEndDateByInt() {
         return enddate.get(Calendar.YEAR) * 10000
                 + enddate.get(Calendar.MONTH) * 100
-                + enddate.get(Calendar.DAY_OF_MONTH);
-    }
-    public int getEndDateByIntForDisplay() {
-        return enddate.get(Calendar.YEAR) * 10000
-                + ( enddate.get(Calendar.MONTH) + 1 ) * 100
                 + enddate.get(Calendar.DAY_OF_MONTH);
     }
     public int getStartTimeByInt(){
@@ -59,9 +52,45 @@ public class Course implements Comparable<Course>, Parcelable{
                 + endtime.get(Calendar.HOUR_OF_DAY) * 100
                 + endtime.get(Calendar.MINUTE);
     }
+    public String getStartDateByString(){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("M,d,yyyy E");
+        return simpleDateFormat.format(startdate.getTime());
+    }
+    public String getEndDateByString(){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("M,d,yyyy E");
+        return simpleDateFormat.format(enddate.getTime());
+    }
+    public String getStartTimeByString(){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
+        return simpleDateFormat.format(starttime.getTime());
+    }
+    public String getEndTimeByString(){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
+        return simpleDateFormat.format(endtime.getTime());
+    }
+
+    @NonNull
+    public static String getString(int year, int month, int day){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("M,d,yyyy E");
+        Date temp = new Date(year, month, day);
+        return simpleDateFormat.format(temp);
+    }
+
+    @NonNull
+    public static String getString(int hour, int minute){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
+        Date temp = new Date(0, 0, 0, hour, minute);
+        return simpleDateFormat.format(temp);
+    }
+
+    public static int convertCalendarToIntFieldYMD(Calendar calendar){
+        return calendar.get(Calendar.YEAR) * 10000
+                + calendar.get(Calendar.MONTH) * 100
+                + calendar.get(Calendar.DAY_OF_MONTH);
+    }
 
     /*
-        Although this method can be used, however, it is strongly deprecated.
+        ConStruction Methods
      */
     public Course(String name, String place, int _starttime, int _endtime, int _start, int _end){
         this.name = name;
@@ -76,7 +105,7 @@ public class Course implements Comparable<Course>, Parcelable{
         endtime.set(0, 0, 0, (_endtime / 100) % 100, _endtime % 100, 0);
         starttime.set(Calendar.DAY_OF_WEEK, startdate.get(Calendar.DAY_OF_WEEK));
         //TODO:There may be bug!
-        endtime.set(Calendar.DAY_OF_WEEK, startdate.get(Calendar.DAY_OF_WEEK));
+        endtime.set(Calendar.DAY_OF_WEEK, enddate.get(Calendar.DAY_OF_WEEK));
     }
 
     public Course(Parcel sourse){
@@ -108,8 +137,8 @@ public class Course implements Comparable<Course>, Parcelable{
         contentValues.put(Database.Place, getPlace());
         contentValues.put(Database.StartTime, getStartTimeByInt());
         contentValues.put(Database.EndTime, getEndTimeByInt());
-        contentValues.put(Database.StartDate, getStartDateByIntForFile());
-        contentValues.put(Database.EndDate, getEndDateByIntForFile());
+        contentValues.put(Database.StartDate, getStartDateByInt());
+        contentValues.put(Database.EndDate, getEndDateByInt());
         return contentValues;
     }
 
@@ -117,8 +146,8 @@ public class Course implements Comparable<Course>, Parcelable{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
         dest.writeString(place);
-        dest.writeInt(this.getStartDateByIntForFile());
-        dest.writeInt(this.getEndDateByIntForFile());
+        dest.writeInt(this.getStartDateByInt());
+        dest.writeInt(this.getEndDateByInt());
         dest.writeInt(this.getStartTimeByInt());
         dest.writeInt(this.getEndTimeByInt());
     }
@@ -143,11 +172,47 @@ public class Course implements Comparable<Course>, Parcelable{
         return "Course{" +
                 "name='" + name + '\'' +
                 ", place='" + place + '\'' +
-                ", starttime=" + getStartTimeByInt() +
-                ", endtime=" + getEndTimeByInt() +
-                ", startdate=" + getStartDateByIntForDisplay() +
-                ", enddate=" + getEndDateByIntForDisplay() +
+                ", starttime=" + getStartTimeByString() +
+                ", endtime=" + getEndTimeByString() +
+                ", startdate=" + getStartDateByString() +
+                ", enddate=" + getEndDateByString() +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Course)) return false;
+
+        Course course = (Course) o;
+
+        if (!getName().equals(course.getName())) return false;
+        if (!getPlace().equals(course.getPlace())) return false;
+        Log.d("Course", "stime " + getStartTimeByInt() + course.getStartTimeByInt());
+        Log.d("Course", "etime " + getEndTimeByInt() + course.getEndTimeByInt());
+        Log.d("Course", "sdate " + getStartDateByInt() + course.getStartDateByInt());
+        Log.d("Course", "edate " + getEndDateByInt() + course.getEndDateByInt());
+        if (getStartTimeByInt() != course.getStartTimeByInt()) return false;
+        if (getEndTimeByInt() != course.getEndTimeByInt()) return false;
+        if (getStartDateByInt() != course.getStartDateByInt()) return false;
+        return getEndDateByInt() == course.getEndDateByInt();
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getName().hashCode();
+        result = 31 * result + getPlace().hashCode();
+        result = 31 * result + starttime.hashCode();
+        result = 31 * result + endtime.hashCode();
+        result = 31 * result + startdate.hashCode();
+        result = 31 * result + enddate.hashCode();
+        return result;
+    }
+
+    public boolean isInThisDay(Calendar calendar){
+        return (Course.convertCalendarToIntFieldYMD(calendar) >= getStartDateByInt())
+                && (Course.convertCalendarToIntFieldYMD(calendar) <= getEndDateByInt());
     }
 }
 

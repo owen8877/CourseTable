@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="tk.xdroid_blog.coursetable.AddCourseActivity">
+    <item android:id="@+id/action_add_course_modify"
+        android:title="MODIFY"
+        android:orderInCategory="100"
+        app:showAsAction="ifRoom" />
+    <item android:id="@+id/action_add_course_delete"
+        android:title="DELETE"
+        android:orderInCategory="90"
+        app:showAsAction="ifRoom" />
+    <item android:id="@+id/action_add_course_cancel"
+        android:title="CANCEL"
+        android:orderInCategory="80"
+        app:showAsAction="ifRoom" />
+</menu>

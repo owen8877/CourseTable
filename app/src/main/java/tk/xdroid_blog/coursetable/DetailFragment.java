@@ -1,16 +1,13 @@
 package tk.xdroid_blog.coursetable;
 
 import android.app.Activity;
-import android.content.Context;
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -64,16 +61,6 @@ public class DetailFragment extends Fragment {
                 startActivity(intent);
             }
         });
-        Button button_1 = (Button) view.findViewById(R.id.debug_button_1);
-        button_1.setOnClickListener(
-            new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(getActivity(), AddCourseActivity.class);
-                    startActivity(intent);
-                }
-            }
-        );
 
         return view;
     }

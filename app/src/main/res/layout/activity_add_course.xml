@@ -32,74 +32,56 @@
         android:textSize="@dimen/abc_text_size_subhead_material"
         android:paddingLeft="@dimen/abc_text_size_subhead_material" />
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <Spinner
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/startDateSpinner"
-            android:spinnerMode="dropdown"
-            android:layout_weight="3"/>
-        <Spinner
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/startTimeSpinner"
-            android:spinnerMode="dropdown"
-            android:layout_weight="2"/>
-    </LinearLayout>
-
     <LinearLayout android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Time : "
-            android:layout_gravity="center"
-            android:id="@+id/activity_add_course_textview_time"
-            android:textSize="@dimen/abc_text_size_medium_material"/>
-
+        android:orientation="horizontal"
+        android:paddingLeft="20dp">
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Start"
-            android:id="@+id/activity_add_course_starttimepicker" />
+            android:id="@+id/activity_add_course_startdatepicker"
+            android:layout_weight="3"/>
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="End"
-            android:id="@+id/activity_add_course_endtimepicker" />
+            android:id="@+id/activity_add_course_starttimepicker"
+            android:layout_weight="2"/>
 
     </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="To"
+        android:id="@+id/activity_add_course_textview_end"
+        android:textColor="#66000000"
+        android:textSize="@dimen/abc_text_size_subhead_material"
+        android:paddingLeft="@dimen/abc_text_size_subhead_material" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Duration : "
-            android:layout_gravity="center"
-            android:id="@+id/activity_add_course_textview_duration"
-            android:textSize="@dimen/abc_text_size_medium_material"/>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/activity_add_course_startdatepicker"
-            android:text="Start"
-            android:layout_gravity="center"/>
+        android:orientation="horizontal"
+        android:paddingLeft="20dp">
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/activity_add_course_enddatepicker"
+            android:text="Start"
+            android:layout_gravity="center"
+            android:layout_weight="3"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/activity_add_course_endtimepicker"
             android:text="End"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:layout_weight="2"/>
 
     </LinearLayout>
 

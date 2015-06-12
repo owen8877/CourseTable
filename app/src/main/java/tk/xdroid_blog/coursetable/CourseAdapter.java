@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
 import java.util.List;
 
 /**
@@ -39,13 +40,13 @@ public class CourseAdapter extends ArrayAdapter<Course> {
         viewHolder.nameholder.setText(course.getName());
         viewHolder.placeholder.setText(course.getPlace());
         viewHolder.timeholder.setText("From "
-                + course.getStartTimeByInt()
+                + course.getStartTimeByString()
                 + " to "
-                + course.getEndTimeByInt());
+                + course.getEndTimeByString());
         viewHolder.durationholder.setText("From "
-                + course.getStartDateByIntForDisplay()
+                + course.getStartDateByString()
                 + " to "
-                + course.getEndDateByIntForDisplay());
+                + course.getEndDateByString());
         return view;
     }
 

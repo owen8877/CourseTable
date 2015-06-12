@@ -5,10 +5,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
-import java.nio.channels.NonWritableChannelException;
-import java.sql.DatabaseMetaData;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -65,10 +62,9 @@ public class Database extends SQLiteOpenHelper {
                 listofsublist.get(c.getWeekDay() - 1).add(c);
             }
             Calendar now = Calendar.getInstance();
-            int i = now.get(Calendar.YEAR) * 10000 + now.get(Calendar.MONTH) * 100 + now.get(Calendar.DAY_OF_MONTH);
-            for (List<Course> sublist : listofsublist) {
-                daylist.add(new Day(i++, sublist));
-            }
+            int time = Course.convertCalendarToIntFieldYMD(now);
+            final int initweekday = now.get(Calendar.DAY_OF_WEEK);
+            for (int i = 0;i < 10;i++) daylist.add(new Day(time++, listofsublist.get((initweekday + i - 1) % 7)));
         }
         return daylist;
     }
@@ -83,7 +79,12 @@ public class Database extends SQLiteOpenHelper {
     }
 
     public synchronized static boolean deleteCourse(Course course){
-        return list.remove(course);
+        if (list.remove(course)){
+            db.getWritableDatabase().delete(TableName, StartTime + " = ?",
+                    new String[]{String.valueOf(course.getStartTimeByInt())});
+            return true;
+        }
+        return false;
     }
 
     public synchronized static boolean modifyCourse(Course course_old, Course course_new){
@@ -108,18 +109,22 @@ public class Database extends SQLiteOpenHelper {
     private void init(){
         SQLiteDatabase dbwriter = db.getWritableDatabase();
 
-        SharedPreferences handle = mContext.getSharedPreferences("data", mContext.MODE_PRIVATE);
+        SharedPreferences handle = mContext.getSharedPreferences("data", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = handle.edit();
         if(!handle.getBoolean("flaghasinit", false)){
             editor.putBoolean("flaghasinit", true);
             editor.apply();
             //TODO:Initialization
-            Course c [];
+            /*Course c [];
             c = new Course[7];
             for (int i = 0;i < 7;i++){
                 c[i] = new Course("C" + (i + 1), "Classroom" + (i + 1), 1030 + 100 * i, 1130 + 100 * i, 20150424 + i, 20150507 + i);
                 dbwriter.insert(Database.TableName, null, c[i].getContentValues());
-            }
+            }*/
+            Course c1 = new Course("Course 1", "Room 1", 900, 1100, 20150510, 20150607);
+            Course c2 = new Course("Course 2", "Room 2", 1300, 1400, 20150508, 20150603);
+            dbwriter.insert(Database.TableName, null, c1.getContentValues());
+            dbwriter.insert(Database.TableName, null, c2.getContentValues());
         }
 
         Cursor cursor = dbwriter.query(Database.TableName, null, null, null, null, null, null);
@@ -131,7 +136,7 @@ public class Database extends SQLiteOpenHelper {
                         cursor.getInt(cursor.getColumnIndex(Database.EndTime)),
                         cursor.getInt(cursor.getColumnIndex(Database.StartDate)),
                         cursor.getInt(cursor.getColumnIndex(Database.EndDate)));
-                Log.d("temp", temp.toString());
+                //Log.d("temp", temp.toString());
                 list.add(temp);
             } while (cursor.moveToNext());
         }

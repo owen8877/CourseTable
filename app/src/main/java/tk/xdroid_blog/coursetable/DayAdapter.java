@@ -36,7 +36,7 @@ public class DayAdapter extends ArrayAdapter<Day> {
             view = convertView;
             viewHolder = (ViewHolder) view.getTag();
         }
-        viewHolder.dateholder.setText(day.getDate());
+        viewHolder.dateholder.setText(day.getDateByString());
         viewHolder.summaryholder.setText(day.getSummary());
         return view;
     }
