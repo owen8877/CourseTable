@@ -6,10 +6,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.gc.materialdesign.views.ButtonFlat;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 
 import java.util.Calendar;
@@ -24,7 +24,7 @@ public class AddCourseActivity extends ActionBarActivity implements com.fourmob.
     private static int flag = 0;
     private static Calendar calendar;
     private static Course temp;
-    Button button_submit, startdatepicker, enddatepicker, starttimepicker, endtimepicker;
+    ButtonFlat button_submit, startdatepicker, enddatepicker, starttimepicker, endtimepicker;
     EditText editTextName, editTextPlace;
 
     @Override
@@ -50,11 +50,10 @@ public class AddCourseActivity extends ActionBarActivity implements com.fourmob.
         editTextName = (EditText) findViewById(R.id.activity_add_course_edittext_name);
         editTextPlace = (EditText) findViewById(R.id.activity_add_course_edittext_place);
 
-        startdatepicker = (Button) findViewById(R.id.activity_add_course_startdatepicker);
-        enddatepicker = (Button) findViewById(R.id.activity_add_course_enddatepicker);
-        starttimepicker = (Button) findViewById(R.id.activity_add_course_starttimepicker);
-        endtimepicker = (Button) findViewById(R.id.activity_add_course_endtimepicker);
-        button_submit = (Button) findViewById(R.id.activity_add_course_button_submit);
+        startdatepicker = (ButtonFlat) findViewById(R.id.activity_add_course_startdatepicker);
+        enddatepicker = (ButtonFlat) findViewById(R.id.activity_add_course_enddatepicker);
+        starttimepicker = (ButtonFlat) findViewById(R.id.activity_add_course_starttimepicker);
+        endtimepicker = (ButtonFlat) findViewById(R.id.activity_add_course_endtimepicker);
 
         if (getIntent().hasExtra("Course")){
             temp = getIntent().getParcelableExtra("Course");
@@ -188,9 +187,6 @@ public class AddCourseActivity extends ActionBarActivity implements com.fourmob.
                     else{
                         Toast.makeText(AddCourseActivity.this, "Please pick dates and times!", Toast.LENGTH_SHORT).show();
                     }
-                    break;
-                case R.id.action_add_course_cancel:
-                    finish();
                     break;
                 case R.id.action_add_course_modify:
                     Database.modifyCourse(temp,

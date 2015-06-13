@@ -4,11 +4,9 @@ import android.content.ContentValues;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 /**
  * Created by Owen on 2015/5/2.
@@ -72,15 +70,17 @@ public class Course implements Comparable<Course>, Parcelable{
     @NonNull
     public static String getString(int year, int month, int day){
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("M,d,yyyy E");
-        Date temp = new Date(year, month, day);
-        return simpleDateFormat.format(temp);
+        Calendar temp = Calendar.getInstance();
+        temp.set(year, month, day);
+        return simpleDateFormat.format(temp.getTime());
     }
 
     @NonNull
     public static String getString(int hour, int minute){
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
-        Date temp = new Date(0, 0, 0, hour, minute);
-        return simpleDateFormat.format(temp);
+        Calendar temp = Calendar.getInstance();
+        temp.set(0, 0, 0, hour, minute);
+        return simpleDateFormat.format(temp.getTime());
     }
 
     public static int convertCalendarToIntFieldYMD(Calendar calendar){
@@ -188,10 +188,10 @@ public class Course implements Comparable<Course>, Parcelable{
 
         if (!getName().equals(course.getName())) return false;
         if (!getPlace().equals(course.getPlace())) return false;
-        Log.d("Course", "stime " + getStartTimeByInt() + course.getStartTimeByInt());
-        Log.d("Course", "etime " + getEndTimeByInt() + course.getEndTimeByInt());
-        Log.d("Course", "sdate " + getStartDateByInt() + course.getStartDateByInt());
-        Log.d("Course", "edate " + getEndDateByInt() + course.getEndDateByInt());
+        //Log.d("Course", "stime " + getStartTimeByInt() + course.getStartTimeByInt());
+        //Log.d("Course", "etime " + getEndTimeByInt() + course.getEndTimeByInt());
+        //Log.d("Course", "sdate " + getStartDateByInt() + course.getStartDateByInt());
+        //Log.d("Course", "edate " + getEndDateByInt() + course.getEndDateByInt());
         if (getStartTimeByInt() != course.getStartTimeByInt()) return false;
         if (getEndTimeByInt() != course.getEndTimeByInt()) return false;
         if (getStartDateByInt() != course.getStartDateByInt()) return false;

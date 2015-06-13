@@ -5,6 +5,7 @@
     tools:context=".DetailActivity">
     <item android:id="@+id/action_detail_activity_add"
         android:title="Add"
+        android:icon="@drawable/ic_add_white_36dp"
         android:orderInCategory="100"
         app:showAsAction="ifRoom"/>
 

@@ -15,6 +15,8 @@ import java.util.List;
  * Created by Owen on 2015/5/3.
  */
 public class Database extends SQLiteOpenHelper {
+    private static final int _COURSE_MAX = 30;
+
     public static final String Create = "create table ";
     public static final String TableName = "Course";
     public static final String TEXT = "text";
@@ -37,7 +39,7 @@ public class Database extends SQLiteOpenHelper {
     private Context mContext;
     private static Database db;
     private static List<Course> list = new ArrayList<Course>();
-    private static List<List<Course>> listofsublist;
+    //private static List<List<Course>> listofsublist;
     public static List<Day> daylist = new ArrayList<Day>();
 
     private Database(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
@@ -54,9 +56,9 @@ public class Database extends SQLiteOpenHelper {
     }
 
     public synchronized static List<Day> getdaylist(Context context){
-        if (db == null) {
+        if (db == null){
             getlist(context);
-            listofsublist = new ArrayList<List<Course>>();
+            List<List<Course>> listofsublist = new ArrayList<List<Course>>();
             for (int a = 0; a < 7; a++) listofsublist.add(new ArrayList<Course>());
             for (Course c : list) {
                 listofsublist.get(c.getWeekDay() - 1).add(c);
@@ -64,7 +66,7 @@ public class Database extends SQLiteOpenHelper {
             Calendar now = Calendar.getInstance();
             int time = Course.convertCalendarToIntFieldYMD(now);
             final int initweekday = now.get(Calendar.DAY_OF_WEEK);
-            for (int i = 0;i < 10;i++) daylist.add(new Day(time++, listofsublist.get((initweekday + i - 1) % 7)));
+            for (int i = 0;i < _COURSE_MAX;i++) daylist.add(new Day(time++, listofsublist.get((initweekday + i - 1) % 7)));
         }
         return daylist;
     }
@@ -73,6 +75,10 @@ public class Database extends SQLiteOpenHelper {
         if (list.add(course)){
             db.getWritableDatabase().insert(TableName, null, course.getContentValues());
             Collections.sort(list);
+            for (Day day:daylist){
+                if (day.getWeekDay() != course.getWeekDay()) continue;
+                if (!day.addCourse(course)) return false;
+            }
             return true;
         }
         return false;
@@ -82,6 +88,10 @@ public class Database extends SQLiteOpenHelper {
         if (list.remove(course)){
             db.getWritableDatabase().delete(TableName, StartTime + " = ?",
                     new String[]{String.valueOf(course.getStartTimeByInt())});
+            for (Day day:daylist){
+                if (day.getWeekDay() != course.getWeekDay()) continue;
+                if (!day.deleteCourse(course)) return false;
+            }
             return true;
         }
         return false;
@@ -92,6 +102,14 @@ public class Database extends SQLiteOpenHelper {
             db.getWritableDatabase().update(TableName, course_new.getContentValues(), StartTime + " = ?",
                     new String[]{String.valueOf(course_old.getStartTimeByInt())});
             Collections.sort(list);
+            for (Day day:daylist){
+                if (day.getWeekDay() == course_old.getWeekDay()){
+                    if (!day.deleteCourse(course_old)) return false;
+                }
+                if (day.getWeekDay() == course_new.getWeekDay()){
+                    if (!day.addCourse(course_new)) return false;
+                }
+            }
             return true;
         }
         return false;

@@ -18,6 +18,7 @@ public class DetailFragment extends Fragment {
     private View view;
     private Activity mActivity;
     private CourseAdapter courseAdapter;
+    private Day day;
 
     public DetailFragment() {
         // Required empty public constructor
@@ -37,8 +38,8 @@ public class DetailFragment extends Fragment {
 
         // Get Intent and the according day instance.
         Intent intent = getActivity().getIntent();
-        int position = intent.getIntExtra("position", -1);
-        Day day = Database.getdaylist(getActivity()).get(position);
+        int day_position = intent.getIntExtra("position", -1);
+        day = Database.getdaylist(getActivity()).get(day_position);
         TextView datetext = (TextView) view.findViewById(R.id.fragment_detail_datelayout_day);
         datetext.setText("" + day.getCalendar().get(Calendar.DAY_OF_MONTH));
         TextView monthtext = (TextView) view.findViewById(R.id.fragment_detail_datelayout_month);
@@ -50,14 +51,14 @@ public class DetailFragment extends Fragment {
 
 
         courseAdapter = new CourseAdapter(mActivity, R.layout.course_layout,
-                Database.getlist(mActivity));
+                day.getVisiblelist());
         ListView listView = (ListView) view.findViewById(R.id.fragment_detail_listview);
         listView.setAdapter(courseAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getActivity(), AddCourseActivity.class);
-                intent.putExtra("Course", Database.getlist(getActivity()).get(position));
+                intent.putExtra("Course", day.getVisiblelist().get(position));
                 startActivity(intent);
             }
         });
@@ -80,5 +81,6 @@ public class DetailFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+        day = null;
     }
 }

@@ -21,21 +21,23 @@ public class MainActivity extends ActionBarActivity{
         // toolbar.setLogo(R.drawable.ic_launcher);
         mToolbar.setTitle(R.string.app_name);
         setSupportActionBar(mToolbar);
-        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
+        mToolbar.setOnMenuItemClickListener(onMenuItemClickListener);
+        init();
+    }
+
+    private Toolbar.OnMenuItemClickListener onMenuItemClickListener = new Toolbar.OnMenuItemClickListener() {
+        @Override
+        public boolean onMenuItemClick(MenuItem menuItem) {
+            switch (menuItem.getItemId()) {
                 case R.id.action_settings:
                     Toast.makeText(MainActivity.this, "action_settings", Toast.LENGTH_SHORT).show();
                     break;
                 default:
                     break;
-                }
-            return true;
             }
-        });
-        init();
-    }
+            return true;
+        }
+    };
 
     @Override
     protected void onResume() {
